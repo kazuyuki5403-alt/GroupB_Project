@@ -43,7 +43,7 @@ public class LoginListDAO {
                     conn.prepareStatement(sql)
         ) {
 
-            ps.setString(1, member.getMember_Id());
+            ps.setString(1, member.getMember_id());
             ps.setString(2, member.getPassword());
 
             ResultSet rs = ps.executeQuery();
@@ -52,13 +52,13 @@ public class LoginListDAO {
 
                 Member loginMember = new Member();
 
-                loginMember.setMember_Id(
+                loginMember.setMember_id(
                         rs.getString("member_id"));
 
                 loginMember.setPassword(
                         rs.getString("password"));
 
-                loginMember.setMember_Name(
+                loginMember.setMember_name(
                         rs.getString("member_name"));
 
                 loginMember.setRole(

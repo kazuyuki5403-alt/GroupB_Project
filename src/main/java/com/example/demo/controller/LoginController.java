@@ -2,11 +2,13 @@ package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.dao.LoginListDAO;
+import com.example.demo.model.Member;
 
 @Controller
 public class LoginController {
@@ -15,16 +17,15 @@ public class LoginController {
     private LoginListDAO loginListDAO;
 
     // ログイン画面表示
-    @GetMapping("/")
+    @GetMapping({"/", "/index"})
     public String showLogin() {
-
         return "index";
     }
 
     // ログイン処理
     @PostMapping("/Login")
     public String login(
-            @RequestParam(menber_Name = "member_name") String name,
+            @RequestParam(name = "name") String name,
             @RequestParam(name = "pass") String pass,
             Model model) {
 
@@ -52,11 +53,18 @@ public class LoginController {
             return "index";
         }
 
-        // DAOで会員検索
-        Login loginUser = loginListDAO.findLogin(name, pass);
+        // 入力値をMemberに格納
+        Member member = new Member();
+
+        member.setMemberId(name);
+        member.setPassword(pass);
+
+        // DAOにログイン検索を依頼
+        Member loginMember =
+                loginListDAO.findByLogin(member);
 
         // ログイン失敗
-        if (loginUser == null) {
+        if (loginMember == null) {
 
             model.addAttribute(
                     "errorMsg",
@@ -71,10 +79,9 @@ public class LoginController {
 
         // ログイン成功
         model.addAttribute(
-                "loginUser",
-                loginUser);
+                "loginMember",
+                loginMember);
 
         return "main";
     }
-
 }

@@ -9,6 +9,13 @@
 <body>
 <h1>新規登録</h1>
 <form action="*" method="post">
+	<input type="text" name="name">
+	<input type="password" name="pass">
+	<input type="text" name="name">
+	<input type="text" name="name">
+	<input type="text" name="name">
+	<input type="text" name="name">
+	<input type="text" name="name">
 	
 </form>
 </body>
