@@ -11,9 +11,14 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Member {
 
-    private String memberId;
-    private String password;
-    private String memberName;
-    private String role;
-
+    private String memberId;        // 会員ID
+    private String password;        // パスワード
+    private String memberName;      // 氏名
+    private String postalCode;      // 郵便番号
+    private String address;         // 住所
+    private String phoneNumber;     // 電話番号
+    private String birthDate;       // 生年月日
+    private String email;           // メールアドレス
+    private String paymentMethod;   // 支払方法
+    private String role;            // 権限
 }
