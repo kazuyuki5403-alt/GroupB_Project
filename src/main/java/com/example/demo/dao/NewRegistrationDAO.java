@@ -3,6 +3,7 @@ package com.example.demo.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.stereotype.Repository;
@@ -20,9 +21,9 @@ public class NewRegistrationDAO {
 	try (Connection conn = DriverManager.getConnection(
 				JDBC_URL, DB_USER, DB_PASS)) {
 
-		String sql = "INSERT INTO member_id, password, member_name, postal_code, "
-			  	+ "address, phone_number, birth_date, email, payment_method "
-			  	+ " FROM members VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO members (member_id, password, member_name, postal_code, "
+			  	+ "address, phone_number, birth_date, email, payment_method) "
+			  	+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement pStmt = conn.prepareStatement(sql);
 
 		pStmt.setString(1, member.getMember_id());
@@ -35,6 +36,7 @@ public class NewRegistrationDAO {
 		pStmt.setString(8, member.getEmail());
 		pStmt.setString(9, member.getPayment_method());
 		
+		
 		int result =pStmt.executeUpdate();
 		if (result != 1) {
 			return false;
@@ -45,5 +47,26 @@ public class NewRegistrationDAO {
 		}
 		return true;
 	}
+	
+	public boolean existsByMemberId(String memberId) {
+		// SELECT COUNT(*) を使って、指定されたIDが存在するか確認します
+		String sql = "SELECT COUNT(*) FROM members WHERE member_id = ?";
 
+		try (Connection conn = DriverManager.getConnection(
+			JDBC_URL, DB_USER, DB_PASS);
+		PreparedStatement pStmt = conn.prepareStatement(sql)) {
+
+		pStmt.setString(1, memberId);
+
+		try (ResultSet rs = pStmt.executeQuery()) {
+		if (rs.next()) {
+		// 件数が 0 より大きければ「重複あり(true)」
+			return rs.getInt(1) > 0;
+			}
+		  }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 }
