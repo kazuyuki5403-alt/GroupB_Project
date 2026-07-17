@@ -56,7 +56,7 @@ public class LoginController {
         // 入力値をMemberに格納
         Member member = new Member();
 
-        member.setMemberId(name);
+        member.setMember_id(name);
         member.setPassword(pass);
 
         // DAOにログイン検索を依頼

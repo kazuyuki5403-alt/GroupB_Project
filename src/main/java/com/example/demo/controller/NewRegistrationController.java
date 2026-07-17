@@ -1,16 +1,83 @@
 package com.example.demo.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.model.NewRegist;
+import com.example.demo.model.Member;
+import com.example.demo.service.NewRegistrationService;
 
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 public class NewRegistrationController {
-	public void execute(NewRegist newRegist) {
-		NewRegistractDAO dao = new NewRegistractDAO();
-		dao.create(newRegist);
-	}
+
+    private final NewRegistrationService newRegistrationService;
+
+    @GetMapping("/registration")
+    public String showRegistration() {
+        return "newRegistration";
+    }
+
+    @PostMapping("/registration")
+    public String register(
+            @RequestParam String memberId,
+            @RequestParam String password,
+            @RequestParam String passwordConfirm,
+            @RequestParam String memberName,
+            @RequestParam String postalCode,
+            @RequestParam String address,
+            @RequestParam String phoneNumber,
+            @RequestParam String birthDate,
+            @RequestParam String email,
+            @RequestParam String paymentMethod,
+            Model model) {
+
+        // パスワード確認
+        if (!password.equals(passwordConfirm)) {
+            model.addAttribute(
+                    "errorMsg",
+                    "パスワードが一致していません");
+
+            return "newRegistration";
+        }
+        // 会員IDの重複チェック
+        if (newRegistrationService.isMemberIdDuplicate(memberId)) {
+            model.addAttribute(
+                    "errorMsg",
+                    "この会員IDは既に登録されています");
+            
+            return "newRegistration";
+        }
+
+        // Memberに値をセット
+        Member member = new Member();
+
+        member.setMember_id(memberId);
+        member.setPassword(password);
+        member.setMember_name(memberName);
+        member.setPostal_code(postalCode);
+        member.setAddress(address);
+        member.setPhone_number(phoneNumber);
+        member.setBirth_date(birthDate);
+        member.setEmail(email);
+        member.setPayment_method(paymentMethod);
+
+        // Service実行
+        boolean result =
+                newRegistrationService.execute(member);
+
+        if (!result) {
+            model.addAttribute(
+                    "errorMsg",
+                    "会員登録に失敗しました");
+
+            return "newRegistration";
+        }
+
+        return "registrationResult";
+    }
 }
