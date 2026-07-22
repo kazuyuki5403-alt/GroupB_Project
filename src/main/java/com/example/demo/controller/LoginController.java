@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,20 +15,36 @@ import com.example.demo.model.Member;
 @Controller
 public class LoginController {
 
+    /*
+     * ログイン認証DAO
+     */
     @Autowired
     private LoginListDAO loginListDAO;
 
-    // ログイン画面表示
+    /**
+     * ログイン画面表示
+     */
     @GetMapping({"/", "/index"})
     public String showLogin() {
+
         return "index";
     }
 
-    // ログイン処理
+    /**
+     * ログイン処理
+     */
     @PostMapping("/Login")
     public String login(
-            @RequestParam(name = "name") String name,
-            @RequestParam(name = "pass") String pass,
+
+            @RequestParam(name = "name")
+            String name,
+
+            @RequestParam(name = "pass")
+            String pass,
+
+            // セッションを追加
+            HttpSession session,
+
             Model model) {
 
         // 会員ID未入力
@@ -53,13 +71,13 @@ public class LoginController {
             return "index";
         }
 
-        // 入力値をMemberに格納
+        // 入力値をMemberへ格納
         Member member = new Member();
 
-        member.setMember_id(name);
+        member.setMemberId(name);
         member.setPassword(pass);
 
-        // DAOにログイン検索を依頼
+        // DAOでログイン認証
         Member loginMember =
                 loginListDAO.findByLogin(member);
 
@@ -77,11 +95,26 @@ public class LoginController {
             return "index";
         }
 
-        // ログイン成功
-        model.addAttribute(
+        /*
+         * ログイン成功
+         * セッションへログイン情報を保存
+         */
+        session.setAttribute(
                 "loginMember",
                 loginMember);
 
+        // メイン画面へ
         return "main";
+    }
+
+    /**
+     * ログアウト
+     */
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+
+        session.invalidate();
+
+        return "redirect:/";
     }
 }

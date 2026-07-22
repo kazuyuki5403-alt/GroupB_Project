@@ -56,15 +56,15 @@ public class NewRegistrationController {
         // Memberに値をセット
         Member member = new Member();
 
-        member.setMember_id(memberId);
+        member.setMemberId(memberId);
         member.setPassword(password);
-        member.setMember_name(memberName);
-        member.setPostal_code(postalCode);
+        member.setMemberName(memberName);
+        member.setPostalCode(postalCode);
         member.setAddress(address);
-        member.setPhone_number(phoneNumber);
-        member.setBirth_date(birthDate);
+        member.setPhoneNumber(phoneNumber);
+        member.setBirthDate(birthDate);
         member.setEmail(email);
-        member.setPayment_method(paymentMethod);
+        member.setPaymentMethod(paymentMethod);
 
         // Service実行
         boolean result =
